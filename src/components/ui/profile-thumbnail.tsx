@@ -8,16 +8,19 @@ export default function ProfileThumbnail({
   alt,
   className,
 }: {
-  src: string;
+  src: string | undefined;
   alt?: string;
   className?: string;
 }) {
   return (
     <div
-      className={cn("relative h-20 w-20 flex-shrink-0 rounded-full", className)}
+      className={cn(
+        "relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full",
+        className,
+      )}
     >
       <Image
-        src={src}
+        src={src ?? "/vercel.svg"}
         fill
         placeholder={`data:image/svg+xml;base64,${toBase64(Shimmer(80, 80))}`}
         alt={alt ?? "Profile image thumbnail"}

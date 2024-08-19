@@ -33,7 +33,7 @@ export default function Navbar() {
     setSearch(e.target.value);
   };
   return (
-    <header className="p-4">
+    <header className="p-4 md:px-8">
       <MaxWidthWrapper className="flex items-center justify-between gap-4 py-3 lg:gap-6">
         <Link href="/" className="md:hidden">
           <Logo />
