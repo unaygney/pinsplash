@@ -28,6 +28,8 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
       return allPages.length + 1;
     },
     initialPageParam: 1,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
   });
 
   const observer = useRef<IntersectionObserver | null>(null);

@@ -10,15 +10,17 @@ export const getTopics = async () => {
   const topics = await unsplash.topics.list({ page: 1 });
 
   if (topics.type === "error") {
-    return [];
+    throw new Error(topics.errors[0]);
   }
 
   return topics.response.results;
 };
 export const getPhotos = async ({ topic, page = 1 }: getPhotosParams) => {
-  console.log("topic", topic);
   if (!topic) {
     const photos = await unsplash.photos.getRandom({ count: 10 });
+    if (photos.type === "error") {
+      throw new Error(photos.errors[0]);
+    }
     return Array.isArray(photos.response) ? photos.response : [photos.response];
   }
 
@@ -27,6 +29,9 @@ export const getPhotos = async ({ topic, page = 1 }: getPhotosParams) => {
     page,
     perPage: 10,
   });
+  if (topicResponse.type === "error") {
+    throw new Error(topicResponse.errors[0]);
+  }
 
   return topicResponse.response?.results;
 };
