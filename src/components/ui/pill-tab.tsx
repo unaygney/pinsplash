@@ -5,7 +5,8 @@ import ProfileThumbnail from "./profile-thumbnail";
 import Text from "./text";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-export default function Pilltab({
+import { Skeleton } from "@/components/ui/skeleton";
+export function Pilltab({
   title,
   imageUrl,
   slug,
@@ -44,5 +45,13 @@ export default function Pilltab({
         {title}
       </Text>
     </motion.button>
+  );
+}
+export function PilltabSkeleton() {
+  return (
+    <div className="flex h-full w-24 min-w-fit flex-shrink-0 items-center gap-3 rounded-full">
+      <Skeleton className="h-10 w-10 rounded-full" />
+      <Skeleton className="h-10 w-24 rounded-full" />
+    </div>
   );
 }

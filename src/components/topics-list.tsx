@@ -1,9 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Pilltab from "./ui/pill-tab";
+import React, { useEffect, useState, useRef } from "react";
+import { Pilltab, PilltabSkeleton } from "./ui/pill-tab";
 import { getTopics } from "@/app/actions";
 import { useQuery } from "@tanstack/react-query";
-import { useRef } from "react";
 import { useDraggable } from "react-use-draggable-scroll";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -36,6 +35,25 @@ export default function TopicList() {
 
     return () => currentRef?.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (isError) {
+    return <div>Failed to load topics</div>;
+  }
+  if (isLoading) {
+    return (
+      <div className="relative w-full">
+        <div
+          className="no-scrollbar relative flex w-full gap-3 overflow-x-scroll rounded-full py-2"
+          ref={ref}
+          {...events}
+        >
+          {Array.from({ length: 10 }).map((_, index) => (
+            <PilltabSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full">

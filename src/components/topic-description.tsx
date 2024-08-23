@@ -13,15 +13,20 @@ export default function TopicDescription({ topic }: { topic: any }) {
   const textColor = luminance > 0.5 ? "text-black" : "text-white";
 
   return (
-    <div className="relative w-full">
-      <AnimatePresence>
+    <AnimatePresence>
+      <motion.div
+        initial={{ height: 0 }}
+        animate={{ height: topic ? "384px" : "0px" }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+        className="relative w-full"
+      >
         {topic && (
           <motion.div
             key={topic.id}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute my-8 flex h-[240px] w-full items-center justify-start overflow-hidden rounded-lg md:h-[384px]"
+            className="absolute my-8 flex h-full w-full items-center justify-start overflow-hidden rounded-lg"
           >
             <div
               className="absolute inset-0 z-10 bg-gradient-to-r"
@@ -46,7 +51,7 @@ export default function TopicDescription({ topic }: { topic: any }) {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
-    </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

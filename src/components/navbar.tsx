@@ -1,37 +1,32 @@
 "use client";
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useState } from "react";
 import { CompleteLogo, Logo, Search } from "./icons";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import MaxWidthWrapper from "./ui/max-width-wrapper";
-import { usePathname, useRouter } from "next/navigation";
-import { useDebounce } from "use-debounce";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const router = useRouter();
-  const pathname = usePathname();
-
   const [search, setSearch] = useState<string>("");
-  const [, startTransition] = useTransition();
-
-  const [debouncedSearch] = useDebounce(search, 500);
-
-  useEffect(() => {
-    startTransition(() => {
-      const params = new URLSearchParams(window.location.search);
-
-      if (debouncedSearch) {
-        params.set("search", debouncedSearch);
-      } else {
-        params.delete("search");
-      }
-      router.replace(`${pathname}?${params.toString()}`);
-    });
-  }, [debouncedSearch, pathname, router]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (search.trim()) {
+      router.push(`/search/${encodeURIComponent(search.trim())}`);
+    }
+  };
+
+  const handleSearchClick = () => {
+    if (search.trim()) {
+      router.push(`/search/${encodeURIComponent(search.trim())}`);
+    }
+  };
+
   return (
     <header className="p-4 md:px-8">
       <MaxWidthWrapper className="flex items-center justify-between gap-4 py-3 lg:gap-6">
@@ -42,14 +37,20 @@ export default function Navbar() {
           <CompleteLogo />
         </Link>
 
-        <div className="relative w-full">
+        <form onSubmit={handleSearchSubmit} className="relative w-full">
           <Input
             placeholder="Search image Eg. Landscape"
             value={search}
             onChange={handleSearchChange}
           />
-          <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 transform" />
-        </div>
+          <button
+            type="button"
+            onClick={handleSearchClick}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 transform"
+          >
+            <Search />
+          </button>
+        </form>
       </MaxWidthWrapper>
     </header>
   );
