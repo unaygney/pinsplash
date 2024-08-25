@@ -1,1 +1,1 @@
-# Pinsplash Web
+# Pinsplash Web Page
