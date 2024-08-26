@@ -25,7 +25,7 @@ export default async function Home({
     <main className="px-4 md:px-8">
       <MaxWidthWrapper className="flex h-full w-full flex-col">
         <TopicList />
-        <TopicDescription topic={topic.response} />
+        {topic && <TopicDescription topic={topic.response} />}
         <ResponsiveImageGrid
           topic={Array.isArray(param) ? param[0] : (param ?? undefined)}
         />

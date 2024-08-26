@@ -171,3 +171,20 @@ export function EmotionSad(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+export function ArrowDown(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      {...props}
+    >
+      <path
+        d="M9.00047 9.81347L12.4378 6.37616L13.4199 7.35825L9.00047 11.7777L4.58105 7.35825L5.56315 6.37616L9.00047 9.81347Z"
+        fill="white"
+      />
+    </svg>
+  );
+}

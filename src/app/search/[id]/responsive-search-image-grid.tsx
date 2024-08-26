@@ -1,15 +1,20 @@
 "use client";
+"use client";
 import { determineAspectRatio, toBase64 } from "@/lib/utils";
 import Image from "next/image";
 import React, { useRef, useCallback } from "react";
-import { EmotionSad, Shimmer } from "./icons";
+import { EmotionSad, Shimmer } from "@/components/icons";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPhotos } from "@/app/actions";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getSearchPhotos } from "./actions";
 
-export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
+export default function ResponsiveSearchImageGrid({
+  search,
+}: {
+  search: string;
+}) {
   const {
     data,
     fetchNextPage,
@@ -18,9 +23,9 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
     isLoading,
     isError,
   } = useInfiniteQuery({
-    queryKey: ["photos", topic],
+    queryKey: ["photos", search],
     queryFn: async ({ pageParam = 1 }) =>
-      await getPhotos({ topic, page: pageParam }),
+      await getSearchPhotos({ query: search, page: pageParam }),
     getNextPageParam: (lastPage, allPages) => {
       if (!lastPage) {
         return undefined;
@@ -94,7 +99,7 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
     <div className="flex flex-col gap-6 md:gap-12">
       <div className="columns-2 gap-4 py-10 lg:columns-3 lg:py-12">
         {data?.pages.flat().map((image: any, index: number) => {
-          const aspectRatio = determineAspectRatio(image?.width, image?.height);
+          const aspectRatio = determineAspectRatio(image.width, image.height);
 
           if (index === data.pages.flat().length - 1) {
             return (
@@ -109,17 +114,15 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
                       : "aspect-square"
                 }`}
               >
-                <Link href={`details/${image?.id}`}>
-                  <Image
-                    src={image.urls.regular}
-                    alt={image.alt_description}
-                    fill
-                    className="absolute inset-0 h-full w-full object-cover"
-                    placeholder={`data:image/svg+xml;base64,${toBase64(
-                      Shimmer(3000, 3000),
-                    )}`}
-                  />
-                </Link>
+                <Image
+                  src={image.urls.regular}
+                  alt={image.alt_description}
+                  fill
+                  className="absolute inset-0 h-full w-full object-cover"
+                  placeholder={`data:image/svg+xml;base64,${toBase64(
+                    Shimmer(3000, 3000),
+                  )}`}
+                />
               </div>
             );
           } else {
@@ -134,17 +137,15 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
                       : "aspect-square"
                 }`}
               >
-                <Link href={`details/${image.id}`}>
-                  <Image
-                    src={image.urls.regular}
-                    alt={image.alt_description}
-                    fill
-                    className="absolute inset-0 h-full w-full object-cover"
-                    placeholder={`data:image/svg+xml;base64,${toBase64(
-                      Shimmer(3000, 3000),
-                    )}`}
-                  />
-                </Link>
+                <Image
+                  src={image.urls.regular}
+                  alt={image.alt_description}
+                  fill
+                  className="absolute inset-0 h-full w-full object-cover"
+                  placeholder={`data:image/svg+xml;base64,${toBase64(
+                    Shimmer(3000, 3000),
+                  )}`}
+                />
               </div>
             );
           }
