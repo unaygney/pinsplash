@@ -1,12 +1,13 @@
 "use client";
-import { determineAspectRatio, toBase64 } from "@/lib/utils";
+import { determineAspectRatio } from "@/lib/utils";
 import Image from "next/image";
 import React, { useRef, useCallback } from "react";
-import { EmotionSad, Shimmer } from "./icons";
+import { EmotionSad } from "./icons";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPhotos } from "@/app/actions";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { Blurhash } from "react-blurhash";
 import { Skeleton } from "./ui/skeleton";
 
 export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
@@ -110,14 +111,27 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
                 }`}
               >
                 <Link href={`details/${image?.id}`}>
+                  <Blurhash
+                    hash={image.blur_hash}
+                    width="100%"
+                    height="100%"
+                    resolutionX={32}
+                    resolutionY={32}
+                    punch={1}
+                    className="absolute inset-0 h-full w-full"
+                  />
                   <Image
                     src={image.urls.regular}
                     alt={image.alt_description}
                     fill
                     className="absolute inset-0 h-full w-full object-cover"
-                    placeholder={`data:image/svg+xml;base64,${toBase64(
-                      Shimmer(3000, 3000),
-                    )}`}
+                    onLoadingComplete={(imageElement) => {
+                      const blurhashElement =
+                        imageElement.previousSibling as HTMLElement;
+                      if (blurhashElement) {
+                        blurhashElement.style.display = "none";
+                      }
+                    }}
                   />
                 </Link>
               </div>
@@ -135,14 +149,27 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
                 }`}
               >
                 <Link href={`details/${image.id}`}>
+                  <Blurhash
+                    hash={image.blur_hash}
+                    width="100%"
+                    height="100%"
+                    resolutionX={32}
+                    resolutionY={32}
+                    punch={1}
+                    className="absolute inset-0 h-full w-full"
+                  />
                   <Image
                     src={image.urls.regular}
                     alt={image.alt_description}
                     fill
                     className="absolute inset-0 h-full w-full object-cover"
-                    placeholder={`data:image/svg+xml;base64,${toBase64(
-                      Shimmer(3000, 3000),
-                    )}`}
+                    onLoadingComplete={(imageElement) => {
+                      const blurhashElement =
+                        imageElement.previousSibling as HTMLElement;
+                      if (blurhashElement) {
+                        blurhashElement.style.display = "none";
+                      }
+                    }}
                   />
                 </Link>
               </div>

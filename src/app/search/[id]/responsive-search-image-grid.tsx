@@ -1,9 +1,8 @@
 "use client";
-"use client";
 import { determineAspectRatio, toBase64 } from "@/lib/utils";
 import Image from "next/image";
 import React, { useRef, useCallback } from "react";
-import { EmotionSad, Shimmer } from "@/components/icons";
+import { EmotionSad, Search, Shimmer } from "@/components/icons";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -36,6 +35,8 @@ export default function ResponsiveSearchImageGrid({
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });
+
+  console.log("data => ", data);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastElementRef = useCallback(
@@ -95,13 +96,38 @@ export default function ResponsiveSearchImageGrid({
       </div>
     );
 
+  const results = data?.pages.flatMap((page) => page.results) || [];
+
+  if (results.length === 0) {
+    return (
+      <div className="flex flex-col py-6">
+        <h3 className="text-3xl font-semibold leading-9 text-neutral-900">
+          {search}
+        </h3>
+        <div className="flex h-screen flex-col items-center justify-center">
+          <div className="flex w-full max-w-[272px] flex-col items-center gap-5 p-6 text-center">
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-full shadow">
+              <Search className="h-6 w-6 text-indigo-700" />
+            </span>
+            <h1 className="text-xl font-medium leading-7 text-neutral-900">
+              No results found
+            </h1>
+            <p className="text-base font-normal leading-6 text-neutral-900">
+              Try using different keywords
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-6 md:gap-12">
       <div className="columns-2 gap-4 py-10 lg:columns-3 lg:py-12">
-        {data?.pages.flat().map((image: any, index: number) => {
+        {results.map((image: any, index: number) => {
           const aspectRatio = determineAspectRatio(image.width, image.height);
 
-          if (index === data.pages.flat().length - 1) {
+          if (index === results.length - 1) {
             return (
               <div
                 ref={lastElementRef}
@@ -114,15 +140,17 @@ export default function ResponsiveSearchImageGrid({
                       : "aspect-square"
                 }`}
               >
-                <Image
-                  src={image.urls.regular}
-                  alt={image.alt_description}
-                  fill
-                  className="absolute inset-0 h-full w-full object-cover"
-                  placeholder={`data:image/svg+xml;base64,${toBase64(
-                    Shimmer(3000, 3000),
-                  )}`}
-                />
+                <Link href={`/details/${image.id}`}>
+                  <Image
+                    src={image.urls.regular}
+                    alt={image.alt_description}
+                    fill
+                    className="absolute inset-0 h-full w-full object-cover"
+                    placeholder={`data:image/svg+xml;base64,${toBase64(
+                      Shimmer(3000, 3000),
+                    )}`}
+                  />
+                </Link>
               </div>
             );
           } else {
@@ -137,15 +165,17 @@ export default function ResponsiveSearchImageGrid({
                       : "aspect-square"
                 }`}
               >
-                <Image
-                  src={image.urls.regular}
-                  alt={image.alt_description}
-                  fill
-                  className="absolute inset-0 h-full w-full object-cover"
-                  placeholder={`data:image/svg+xml;base64,${toBase64(
-                    Shimmer(3000, 3000),
-                  )}`}
-                />
+                <Link href={`/details/${image.id}`}>
+                  <Image
+                    src={image.urls.regular}
+                    alt={image.alt_description}
+                    fill
+                    className="absolute inset-0 h-full w-full object-cover"
+                    placeholder={`data:image/svg+xml;base64,${toBase64(
+                      Shimmer(3000, 3000),
+                    )}`}
+                  />
+                </Link>
               </div>
             );
           }

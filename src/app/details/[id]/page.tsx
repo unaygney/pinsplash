@@ -3,21 +3,14 @@ import { redirect } from "next/navigation";
 import { getPhotoWithId } from "./actions";
 import MaxWidthWrapper from "@/components/ui/max-width-wrapper";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { determineAspectRatio, getInitials, toBase64 } from "@/lib/utils";
+import { getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, Shimmer } from "@/components/icons";
-import Image from "next/image";
+import { ArrowDown } from "@/components/icons";
+
 import Tag from "@/components/ui/tag";
 import dynamic from "next/dynamic";
+import ImageContainer from "./image-container";
 const RelatedImages = dynamic(() => import("./related-images"), { ssr: false });
-
-interface PhotoUrls {
-  raw: string;
-  full: string;
-  regular: string;
-  small: string;
-  thumb: string;
-}
 
 export default async function DetailsPage({
   params,
@@ -41,6 +34,7 @@ export default async function DetailsPage({
           height={photo.height}
           photoUrls={photo.urls}
           alt={photo.alt_description}
+          blurHash={photo.blur_hash!}
         />
         <ImageDetails
           views={photo.likes}
@@ -82,39 +76,6 @@ function UserDetails({ photo, name }: { photo: string; name: string }) {
         Download
         <ArrowDown />
       </Button>
-    </div>
-  );
-}
-
-function ImageContainer({
-  photoUrls,
-  width,
-  height,
-  alt,
-}: {
-  photoUrls: PhotoUrls;
-  width: number;
-  height: number;
-  alt: string | null;
-}) {
-  const aspectRatio = determineAspectRatio(width, height);
-
-  // En uygun URL’yi oluşturuyoruz
-  const optimizedUrl = `${photoUrls.regular}&w=1200&h=800&fit=${
-    Number(aspectRatio) > 1 ? "cover" : "contain"
-  }&auto=format&q=80&dpr=2`;
-
-  return (
-    <div className="relative h-[155px] w-full overflow-hidden rounded-[2.26px] md:h-[317px] lg:h-[548px]">
-      <Image
-        src={optimizedUrl}
-        fill
-        alt={alt ?? "image"}
-        className="hidden lg:block"
-        placeholder={`data:image/svg+xml;base64,${toBase64(
-          Shimmer(3000, 3000),
-        )}`}
-      />
     </div>
   );
 }
