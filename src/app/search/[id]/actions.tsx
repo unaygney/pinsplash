@@ -18,8 +18,8 @@ export const getSearchPhotos = async ({
       return { status: false, message: photos.errors[0] };
     }
 
-    if (!photos.response) {
-      return { status: false, message: "Try using different keywords" };
+    if (!photos.response || photos.response.results.length === 0) {
+      return { status: true, results: [] };
     }
 
     return { status: true, results: photos.response.results };
