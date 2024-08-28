@@ -28,6 +28,7 @@ export default async function DetailsPage({
           name={photo.user.name}
           id={photo.id}
           downloadUrl={photo.links.download_location}
+          authorUrl={photo.user.links.html}
         />
         <ImageContainer
           width={photo.width}

@@ -26,8 +26,8 @@ export default function ImageContainer({
   blurHash: string;
 }) {
   const aspectRatio = determineAspectRatio(width, height);
-  // const objectFitStyle =
-  //   aspectRatio === "9/16" ? "object-contain" : "object-cover";
+  const objectFitStyle =
+    aspectRatio === "9/16" || "1/1" ? "object-contain" : "object-cover";
 
   const getOptimizedImageUrl = (
     url: string,
@@ -77,7 +77,10 @@ export default function ImageContainer({
         alt={alt ?? "image"}
         fill
         priority={true}
-        className={cn("transition-all duration-300 ease-in-out")}
+        className={cn(
+          "transition-all duration-300 ease-in-out",
+          objectFitStyle,
+        )}
         onLoad={(event) => {
           const imageElement = event.target as HTMLImageElement;
           const blurhashElement = imageElement.previousSibling as HTMLElement;

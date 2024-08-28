@@ -10,17 +10,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Link from "next/link";
 
 export default function UserDetails({
   photo,
   name,
   id,
   downloadUrl,
+  authorUrl,
 }: {
   id: string;
   photo: string;
   name: string;
   downloadUrl: string;
+  authorUrl: string | null | undefined;
 }) {
   const downloadImage = async (url: string, width: string, height: string) => {
     const res = await updateDownloadCount(url, width, height);
@@ -36,9 +39,12 @@ export default function UserDetails({
           <AvatarImage className="" src={photo} />
           <AvatarFallback>{getInitials(name)}</AvatarFallback>
         </Avatar>
-        <span className="text-base font-semibold leading-6 text-neutral-900">
+        <Link
+          href={authorUrl ?? "#"}
+          className="text-base font-semibold leading-6 text-neutral-900 hover:text-neutral-950"
+        >
           {name}
-        </span>
+        </Link>
       </div>
 
       <Popover>
