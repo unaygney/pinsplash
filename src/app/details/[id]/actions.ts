@@ -45,3 +45,21 @@ export const getRelatedImages = async (topic: string) => {
     );
   }
 };
+
+export const updateDownloadCount = async (
+  url: string,
+  width: string,
+  height: string,
+) => {
+  const updateCount = await unsplash.photos.trackDownload({
+    downloadLocation: url,
+  });
+
+  let downloadImageUrl = updateCount.response?.url;
+
+  if (downloadImageUrl) {
+    downloadImageUrl = `${downloadImageUrl}&w=${width}&h=${height}&fit=crop`;
+  }
+
+  return downloadImageUrl;
+};
