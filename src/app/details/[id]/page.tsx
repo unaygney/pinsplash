@@ -42,9 +42,9 @@ export default async function DetailsPage({
             // @ts-ignore
             photo.downloads
           }
-          tags={
+          topics={
             // @ts-ignore
-            photo.tags
+            photo.topics
           }
           date={photo.created_at}
         />
@@ -63,12 +63,12 @@ function ImageDetails({
   views,
   downloads,
   date,
-  tags,
+  topics,
 }: {
   views: number;
   downloads: number;
   date: string;
-  tags: any[];
+  topics: any[];
 }) {
   const formattedDate = new Date(date).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -105,19 +105,11 @@ function ImageDetails({
         </div>
       </div>
       <div className="flex flex-wrap gap-3">
-        {tags.map((tag, i) => {
-          if (tag.type === "topic" && tag?.title) {
-            return (
-              <Link
-                key={i}
-                href={`/?topic=${encodeURIComponent(tag.title.toLowerCase())}`}
-              >
-                <Tag>{tag.title}</Tag>
-              </Link>
-            );
-          }
-          return null;
-        })}
+        {topics.map((topic, i) => (
+          <Link key={i} href={`/?topic=${topic.slug}`}>
+            <Tag>{topic.title}</Tag>
+          </Link>
+        ))}
       </div>
     </div>
   );
