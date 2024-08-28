@@ -26,8 +26,40 @@ export default function ImageContainer({
   blurHash: string;
 }) {
   const aspectRatio = determineAspectRatio(width, height);
-  const objectFitStyle =
-    aspectRatio === "9/16" ? "object-contain" : "object-cover";
+  // const objectFitStyle =
+  //   aspectRatio === "9/16" ? "object-contain" : "object-cover";
+
+  const getOptimizedImageUrl = (
+    url: string,
+    options: {
+      w?: number;
+      h?: number;
+      fit?: string;
+      fm?: string;
+      q?: number;
+      dpr?: number;
+    } = {},
+  ) => {
+    const params = new URLSearchParams({
+      ...(options.w && { w: options.w.toString() }),
+      ...(options.h && { h: options.h.toString() }),
+      ...(options.fit && { fit: options.fit }),
+      ...(options.fm && { fm: options.fm }),
+      ...(options.q && { q: options.q.toString() }),
+      ...(options.dpr && { dpr: options.dpr.toString() }),
+      auto: "format",
+    });
+    return `${url}?${params.toString()}`;
+  };
+
+  const optimizedImageUrl = getOptimizedImageUrl(photoUrls.raw, {
+    w: width * 0.8,
+    h: height * 0.8,
+    fit: "cover",
+    fm: "jpg",
+    q: 80,
+    dpr: 2,
+  });
 
   return (
     <div className="relative h-[155px] w-full overflow-hidden rounded-[2.26px] md:h-[317px] lg:h-[548px]">
@@ -41,36 +73,13 @@ export default function ImageContainer({
         className="absolute inset-0 h-full w-full"
       />
       <Image
-        src={photoUrls.small}
-        fill
+        src={optimizedImageUrl}
         alt={alt ?? "image"}
-        className={cn("md:hidden", objectFitStyle)}
-        onLoadingComplete={(imageElement) => {
-          // Blurhash görüntüsünü gizle
-          const blurhashElement = imageElement.previousSibling as HTMLElement;
-          if (blurhashElement) {
-            blurhashElement.style.display = "none";
-          }
-        }}
-      />
-      <Image
-        src={photoUrls.regular}
         fill
-        alt={alt ?? "image"}
-        className={cn("hidden md:block lg:hidden", objectFitStyle)}
-        onLoadingComplete={(imageElement) => {
-          const blurhashElement = imageElement.previousSibling as HTMLElement;
-          if (blurhashElement) {
-            blurhashElement.style.display = "none";
-          }
-        }}
-      />
-      <Image
-        src={photoUrls.full}
-        fill
-        alt={alt ?? "image"}
-        className={cn("hidden lg:block", objectFitStyle)}
-        onLoadingComplete={(imageElement) => {
+        priority={true}
+        className={cn("transition-all duration-300 ease-in-out")}
+        onLoad={(event) => {
+          const imageElement = event.target as HTMLImageElement;
           const blurhashElement = imageElement.previousSibling as HTMLElement;
           if (blurhashElement) {
             blurhashElement.style.display = "none";

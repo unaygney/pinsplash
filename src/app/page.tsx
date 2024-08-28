@@ -19,6 +19,7 @@ export default async function Home({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { topic: param } = searchParams;
+
   const topic = await unsplash.topics.get({ topicIdOrSlug: param as string });
 
   return (

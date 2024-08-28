@@ -1,5 +1,5 @@
 "use client";
-import { determineAspectRatio } from "@/lib/utils";
+import { determineAspectRatio, getInitials } from "@/lib/utils";
 import Image from "next/image";
 import React, { useRef, useCallback } from "react";
 import { EmotionSad } from "./icons";
@@ -9,6 +9,14 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Blurhash } from "react-blurhash";
 import { Skeleton } from "./ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
   const {
@@ -96,85 +104,83 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
       <div className="columns-2 gap-4 py-10 lg:columns-3 lg:py-12">
         {data?.pages.flat().map((image: any, index: number) => {
           const aspectRatio = determineAspectRatio(image?.width, image?.height);
+          console.log(image);
+          const ImageComponent = (
+            <div
+              key={index}
+              className={`group relative mb-4 break-inside-avoid overflow-hidden rounded-lg ${
+                aspectRatio === "9/16"
+                  ? "aspect-[9/16]"
+                  : aspectRatio === "4/3"
+                    ? "aspect-[4/3]"
+                    : "aspect-square"
+              }`}
+            >
+              <Link href={`details/${image.id}`}>
+                {/* Blurhash for loading effect */}
+                <Blurhash
+                  hash={image.blur_hash}
+                  width="100%"
+                  height="100%"
+                  resolutionX={32}
+                  resolutionY={32}
+                  punch={1}
+                  className="absolute inset-0 h-full w-full"
+                />
+                {/* Image */}
+                <Image
+                  src={image.urls.regular}
+                  alt={image.alt_description}
+                  fill
+                  className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+                  onLoadingComplete={(imageElement) => {
+                    const blurhashElement =
+                      imageElement.previousSibling as HTMLElement;
+                    if (blurhashElement) {
+                      blurhashElement.style.display = "none";
+                    }
+                  }}
+                />
+                {/* Overlay and Caption */}
+                <div className="absolute inset-0 bg-black/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                <div className="absolute bottom-2 left-2 z-10 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <div className="flex items-center gap-2">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          {" "}
+                          <Avatar className="h-6 w-6">
+                            <AvatarImage
+                              className=""
+                              src={image.user.profile_image.small}
+                            />
+                            <AvatarFallback>
+                              {getInitials(image?.user?.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                        </TooltipTrigger>
+                        <TooltipContent>{image?.user?.name}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <span className="line-clamp-1 text-xs font-semibold leading-4 text-white">
+                      {image?.description || image?.alt_description}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          );
 
           if (index === data.pages.flat().length - 1) {
             return (
-              <div
-                ref={lastElementRef}
-                key={index}
-                className={`relative mb-4 break-inside-avoid overflow-hidden rounded-lg ${
-                  aspectRatio === "9/16"
-                    ? "aspect-[9/16]"
-                    : aspectRatio === "4/3"
-                      ? "aspect-[4/3]"
-                      : "aspect-square"
-                }`}
-              >
-                <Link href={`details/${image?.id}`}>
-                  <Blurhash
-                    hash={image.blur_hash}
-                    width="100%"
-                    height="100%"
-                    resolutionX={32}
-                    resolutionY={32}
-                    punch={1}
-                    className="absolute inset-0 h-full w-full"
-                  />
-                  <Image
-                    src={image.urls.regular}
-                    alt={image.alt_description}
-                    fill
-                    className="absolute inset-0 h-full w-full object-cover"
-                    onLoadingComplete={(imageElement) => {
-                      const blurhashElement =
-                        imageElement.previousSibling as HTMLElement;
-                      if (blurhashElement) {
-                        blurhashElement.style.display = "none";
-                      }
-                    }}
-                  />
-                </Link>
-              </div>
-            );
-          } else {
-            return (
-              <div
-                key={index}
-                className={`relative mb-4 break-inside-avoid overflow-hidden rounded-lg ${
-                  aspectRatio === "9/16"
-                    ? "aspect-[9/16]"
-                    : aspectRatio === "4/3"
-                      ? "aspect-[4/3]"
-                      : "aspect-square"
-                }`}
-              >
-                <Link href={`details/${image.id}`}>
-                  <Blurhash
-                    hash={image.blur_hash}
-                    width="100%"
-                    height="100%"
-                    resolutionX={32}
-                    resolutionY={32}
-                    punch={1}
-                    className="absolute inset-0 h-full w-full"
-                  />
-                  <Image
-                    src={image.urls.regular}
-                    alt={image.alt_description}
-                    fill
-                    className="absolute inset-0 h-full w-full object-cover"
-                    onLoadingComplete={(imageElement) => {
-                      const blurhashElement =
-                        imageElement.previousSibling as HTMLElement;
-                      if (blurhashElement) {
-                        blurhashElement.style.display = "none";
-                      }
-                    }}
-                  />
-                </Link>
+              <div ref={lastElementRef} key={index}>
+                {ImageComponent}
               </div>
             );
           }
+
+          return ImageComponent;
         })}
       </div>
       {isFetchingNextPage && (

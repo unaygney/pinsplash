@@ -1,5 +1,5 @@
 "use client";
-import { determineAspectRatio } from "@/lib/utils";
+import { determineAspectRatio, getInitials } from "@/lib/utils";
 import Image from "next/image";
 import React, { useRef, useCallback } from "react";
 import { EmotionSad, Search } from "@/components/icons";
@@ -9,6 +9,13 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getSearchPhotos } from "./actions";
 import { Blurhash } from "react-blurhash";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ResponsiveSearchImageGrid({
   search,
@@ -171,7 +178,7 @@ export default function ResponsiveSearchImageGrid({
             return (
               <div
                 key={index}
-                className={`relative mb-4 break-inside-avoid overflow-hidden rounded-lg ${
+                className={`group relative mb-4 break-inside-avoid overflow-hidden rounded-lg ${
                   aspectRatio === "9/16"
                     ? "aspect-[9/16]"
                     : aspectRatio === "4/3"
@@ -202,6 +209,34 @@ export default function ResponsiveSearchImageGrid({
                       }
                     }}
                   />
+
+                  {/* Overlay and Caption */}
+                  <div className="absolute inset-0 bg-black/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                  <div className="absolute bottom-2 left-2 z-10 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="flex items-center gap-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            {" "}
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage
+                                className=""
+                                src={image.user.profile_image.small}
+                              />
+                              <AvatarFallback>
+                                {getInitials(image?.user?.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </TooltipTrigger>
+                          <TooltipContent>{image?.user?.name}</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                      <span className="line-clamp-1 text-xs font-semibold leading-4 text-white">
+                        {image?.description || image?.alt_description}
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               </div>
             );

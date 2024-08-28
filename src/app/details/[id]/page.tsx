@@ -2,14 +2,12 @@ import React from "react";
 import { redirect } from "next/navigation";
 import { getPhotoWithId } from "./actions";
 import MaxWidthWrapper from "@/components/ui/max-width-wrapper";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { getInitials } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ArrowDown } from "@/components/icons";
 
 import Tag from "@/components/ui/tag";
 import dynamic from "next/dynamic";
 import ImageContainer from "./image-container";
+import UserDetails from "./user-details";
+import Link from "next/link";
 const RelatedImages = dynamic(() => import("./related-images"), { ssr: false });
 
 export default async function DetailsPage({
@@ -28,6 +26,8 @@ export default async function DetailsPage({
         <UserDetails
           photo={photo.user.profile_image.small}
           name={photo.user.name}
+          id={photo.id}
+          downloadUrl={photo.links.download_location}
         />
         <ImageContainer
           width={photo.width}
@@ -56,27 +56,6 @@ export default async function DetailsPage({
         />
       </MaxWidthWrapper>
     </main>
-  );
-}
-
-function UserDetails({ photo, name }: { photo: string; name: string }) {
-  return (
-    <div className="flex w-full items-center justify-between">
-      <div className="flex items-center gap-2">
-        <Avatar className="h-6 w-6">
-          <AvatarImage className="" src={photo} />
-          <AvatarFallback>{getInitials(name)}</AvatarFallback>
-        </Avatar>
-        <span className="text-base font-semibold leading-6 text-neutral-900">
-          {name}
-        </span>
-      </div>
-
-      <Button>
-        Download
-        <ArrowDown />
-      </Button>
-    </div>
   );
 }
 
@@ -127,8 +106,15 @@ function ImageDetails({
       </div>
       <div className="flex flex-wrap gap-3">
         {tags.map((tag, i) => {
-          if (tag.type === "search") {
-            return <Tag key={i}>{tag?.title}</Tag>;
+          if (tag.type === "topic" && tag?.title) {
+            return (
+              <Link
+                key={i}
+                href={`/?topic=${encodeURIComponent(tag.title.toLowerCase())}`}
+              >
+                <Tag>{tag.title}</Tag>
+              </Link>
+            );
           }
           return null;
         })}
