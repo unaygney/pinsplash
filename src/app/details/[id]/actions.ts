@@ -58,7 +58,7 @@ export const updateDownloadCount = async (
   let downloadImageUrl = updateCount.response?.url;
 
   if (downloadImageUrl) {
-    downloadImageUrl = `${downloadImageUrl}&w=${width}&h=${height}&fit=crop`;
+    downloadImageUrl = `${downloadImageUrl}&w=${width}&h=${height}`;
   }
 
   return downloadImageUrl;

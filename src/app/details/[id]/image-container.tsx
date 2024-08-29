@@ -53,9 +53,9 @@ export default function ImageContainer({
   };
 
   const optimizedImageUrl = getOptimizedImageUrl(photoUrls.raw, {
-    w: width * 0.8,
-    h: height * 0.8,
-    fit: "cover",
+    w: width * 0.4,
+    h: height * 0.4,
+    fit: "clamp",
     fm: "jpg",
     q: 80,
     dpr: 2,
@@ -76,7 +76,6 @@ export default function ImageContainer({
         src={optimizedImageUrl}
         alt={alt ?? "image"}
         fill
-        priority={true}
         className={cn(
           "transition-all duration-300 ease-in-out",
           objectFitStyle,

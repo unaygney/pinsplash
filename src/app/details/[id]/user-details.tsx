@@ -28,7 +28,10 @@ export default function UserDetails({
   const downloadImage = async (url: string, width: string, height: string) => {
     const res = await updateDownloadCount(url, width, height);
     if (res) {
-      window.open(res, "_blank");
+      const link = document.createElement("a");
+      link.href = res;
+      link.target = "_blank";
+      link.click();
     }
   };
 
