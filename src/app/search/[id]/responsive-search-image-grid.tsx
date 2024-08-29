@@ -133,7 +133,7 @@ export default function ResponsiveSearchImageGrid({
     <div className="flex flex-col gap-6 md:gap-12">
       <div className="columns-2 gap-4 py-10 lg:columns-3 lg:py-12">
         {results.map((image: any, index: number) => {
-          const aspectRatio = determineAspectRatio(image.width, image.height);
+          const aspectRatio = determineAspectRatio(image?.width, image?.height);
 
           if (index === results.length - 1) {
             return (
@@ -148,7 +148,7 @@ export default function ResponsiveSearchImageGrid({
                       : "aspect-square"
                 }`}
               >
-                <Link href={`/details/${image.id}`}>
+                <Link className="h-full w-full" href={`/details/${image.id}`}>
                   <Blurhash
                     hash={image.blur_hash}
                     width="100%"
@@ -186,7 +186,7 @@ export default function ResponsiveSearchImageGrid({
                       : "aspect-square"
                 }`}
               >
-                <Link href={`/details/${image.id}`}>
+                <Link className="h-full w-full" href={`/details/${image.id}`}>
                   <Blurhash
                     hash={image.blur_hash}
                     width="100%"

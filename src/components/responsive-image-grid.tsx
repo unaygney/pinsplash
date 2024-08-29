@@ -104,7 +104,6 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
       <div className="columns-2 gap-4 py-10 lg:columns-3 lg:py-12">
         {data?.pages.flat().map((image: any, index: number) => {
           const aspectRatio = determineAspectRatio(image?.width, image?.height);
-          console.log(image);
           const ImageComponent = (
             <div
               key={index}
@@ -116,7 +115,7 @@ export default function ResponsiveImageGrid({ topic }: { topic?: string }) {
                     : "aspect-square"
               }`}
             >
-              <Link href={`details/${image.id}`}>
+              <Link className="h-full w-full" href={`details/${image.id}`}>
                 {/* Blurhash for loading effect */}
                 <Blurhash
                   hash={image.blur_hash}
